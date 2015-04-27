@@ -1,11 +1,14 @@
 import twitter
 import json
 import CommonUtil
-CONSUMER_KEY = 
-CONSUMER_SECRET = 
-OAUTH_TOKEN = 
-OAUTH_TOKEN_SECRET = 
-
+import numpy as np
+from scipy.io import loadmat
+CONSUMER_KEY = '2GvrOLlhgIXuo0oObvOXWqKsO'
+CONSUMER_SECRET = 'BDnQLqmoQmSdImEF23mQdlt17touHHoCYz62SGZsUrs2T2L6Ax'
+OAUTH_TOKEN = '1334170615-LqxQ7JdNohxttRL0RlSVhDSnPC08Sx5wOkgYW5T'
+OAUTH_TOKEN_SECRET = 'kRr8b4DYVpikZVSsUYt7lD4FWFb3DnlbZwIud1Qy6w9lE'
+num_of_features = 7
+num_of_topics = 10
 auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET,
                            CONSUMER_KEY, CONSUMER_SECRET)
 
@@ -14,36 +17,49 @@ twitter_api = twitter.Twitter(auth=auth)
 US_WOE_ID = 23424977
 
 us_trends = twitter_api.trends.place(_id=US_WOE_ID)
-print json.dumps(us_trends, indent=1)
 
-# print the top 3 tweets
-topTweets = []
-for i in range(3):
+# print the top 10 tweets
+topics = []
+for i in range(num_of_topics):
     name = us_trends[0]["trends"][i]["name"]
     print name
-    topTweets.append(name)
+    topics.append(name)
 
-q = topTweets[0]
-count = 1
-search_results = twitter_api.search.tweets(q=q, count=count)
+outfile = open("test.txt", "w")
+count = 10
+for topic in topics:
+    search_results = twitter_api.search.tweets(q=topic, count=count)
+    statuses = search_results["statuses"]
+    print len(statuses)
+    row_num = 0
+    while row_num < count:
+        status = statuses[row_num]
+        text = status["text"]
+        # Message based features
+        length_tweet = len(text)
+        num_words = len(text.split())
+        num_unique_chars = CommonUtil.count_unique_chars(text)
+        num_hashtags = text.count("#")
+        retweet_cnt = status["retweet_count"]
+        num_swear_words = CommonUtil.count_swear_words(text)
+        num_at_emotions = text.count("@")
+        tweet_str = str(length_tweet) + "|" + str(num_words) + "|" + str(num_unique_chars) + "|" \
+                    + str(num_hashtags) + "|" + str(retweet_cnt) + "|" + str(num_swear_words) + "|" \
+                    + str(num_at_emotions)
 
-# print json.dumps(search_results, indent=1)
 
-statuses = search_results["statuses"]
-status = statuses[0]
-text = status["text"]
+        outfile.write(tweet_str)
+        outfile.write("\n")
+        row_num += 1
+outfile.close()
 
-# Message based features
-print "Text:", text
-print "Length of the tweet:", len(text)
-print "NUmber of words:", len(text.split())
-print "Number of unique chars:", CommonUtil.count_unique_chars(text)
-print "Number of hashtags:", text.count("#")
-print "Retweet count:", status["retweet_count"]
-print "Number of swear words:", CommonUtil.count_swear_words(text)
-print "Number of @ emotions:", text.count("@")
+#read file
 
+f = open("test.txt", "r")
+lineCnt = 0
+for line in f:
+    print line
+    lineCnt+=1
 
-# Source based features
-
+print lineCnt
 

@@ -25,3 +25,11 @@ def count_swear_words(inp):
             count += 1
     return count
 print count_swear_words("Test")
+
+
+def file_len(fname):
+    cnt = 0
+    with open(fname) as f:
+        for i, l in enumerate(f):
+           cnt += 1
+    return cnt
