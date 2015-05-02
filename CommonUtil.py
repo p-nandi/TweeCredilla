@@ -1,5 +1,6 @@
 import pickle
 import time
+import re
 from datetime import datetime
 # http://en.wiktionary.org/wiki/Category:English_swear_words
 swear_words = {"arse", "ass", "asshole", "bastard", "bitch", "bloody", "bollocks", "child-fucker",
@@ -12,6 +13,10 @@ fp = open("posW","r+")
 fn = open("posN","r+")
 positiveWords = pickle.load(fp)
 negativeWords = pickle.load(fn)
+
+smiley_pattern = '^(:-\(|:-\))+$' # matches only the smileys ":-)" and ":-("
+smiley_matcher = re.compile(smiley_pattern)
+
 
 def count_unique_chars(inp):
     d = {}
@@ -37,29 +42,39 @@ def file_len(fname):
     cnt = 0
     with open(fname) as f:
         for i, l in enumerate(f):
-           cnt += 1
+            cnt += 1
     return cnt
 
 
 def count_pos_words(inp):
-    count = 0;
-    words = inp.split();
+    count = 0
+    words = inp.split()
     for word in words:
         if word in positiveWords:
-            count = count + 1
+            count += 1
     return count
 
 
 def count_neg_words(inp):
-    count = 0;
-    words = inp.split();
+    count = 0
+    words = inp.split()
     for word in words:
         if word in negativeWords:
-            count = count + 1
+            count += 1
     return count
+
 
 def count_num_days_from_today(inp):
     d1 = datetime.strptime(inp, '%a %b %d %H:%M:%S +0000 %Y')
     today = time.strftime('%Y-%m-%d')
     d2 = datetime.strptime(today, '%Y-%m-%d')
     return (d2-d1).days
+
+
+def count_num_emoticons(inp):
+    count = 0
+    words = inp.split()
+    for word in words:
+        if smiley_matcher.match(word):
+            count += 1
+    return count
