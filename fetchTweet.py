@@ -2,12 +2,10 @@ import twitter
 import json
 import CommonUtil
 from Tweet import Tweet
+from django.utils.encoding import smart_str, smart_unicode
 import numpy as np
 from scipy.io import loadmat
-CONSUMER_KEY = '2GvrOLlhgIXuo0oObvOXWqKsO'
-CONSUMER_SECRET = 'BDnQLqmoQmSdImEF23mQdlt17touHHoCYz62SGZsUrs2T2L6Ax'
-OAUTH_TOKEN = '1334170615-LqxQ7JdNohxttRL0RlSVhDSnPC08Sx5wOkgYW5T'
-OAUTH_TOKEN_SECRET = 'kRr8b4DYVpikZVSsUYt7lD4FWFb3DnlbZwIud1Qy6w9lE'
+
 
 num_of_features = 7
 num_of_topics = 1
@@ -32,6 +30,8 @@ outfile = open("test.txt", "w")
 total_count = 100
 count_per_search = 100
 topic_counter = 0
+num_positive = 0
+num_negative = 0
 for topic in topics:
     topic_counter += 1
     print "topic #", topic_counter
@@ -79,19 +79,25 @@ for topic in topics:
             if user_url:
                 t.has_url = 1
             # Create tweet characteristics to write to file
-            tweet_str =  str(t.length_tweet) + "|" + str(t.num_words) + "|" + str(t.num_unique_chars) + "|" \
+            annotation = t.annotate()
+            tweet_str =  smart_str(text) + str(t.length_tweet) + "|" + str(t.num_words) + "|" + str(t.num_unique_chars) + "|" \
                         + str(t.num_hashtags) + "|" + "Retweets:"+str(t.retweet_cnt) + "|" + str(t.num_swear_words) + "|" \
                         + str(t.num_at_emotions) + "|" \
                         + "Registration age:"+str(t.registration_age) + "|" + "Followers:"+str(t.num_followers) + "|" + "Followee:"+str(t.num_followee) + "|" \
                         + "Is verified:"+str(t.is_verified) + "|" + "Len desc:"+str(t.len_desc) + "|" + "Len Screen name:"+str(t.len_screen_name) + "|" \
                         + "Has url:"+str(t.has_url) + "|" \
-                        + "Annotation:"+str(t.annotate()) + "|"
-            print tweet_str
+                        + "Annotation:"+str(annotation) + "|"
+
+            if annotation == 1:
+                num_positive +=1
+            else:
+                num_negative +=1
             outfile.write(tweet_str)
             outfile.write("\n")
             row_num += 1
         count_fetched += search_results_len
-        print "count_fetched", count_fetched
+        print "Num of positive tweets ", num_positive
+        print "Num of negative tweets ", num_negative
     print "-------------------------------------------------"
 outfile.close()
 
