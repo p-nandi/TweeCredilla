@@ -4,6 +4,10 @@ import CommonUtil
 from Tweet import Tweet
 import numpy as np
 from scipy.io import loadmat
+CONSUMER_KEY = '2GvrOLlhgIXuo0oObvOXWqKsO'
+CONSUMER_SECRET = 'BDnQLqmoQmSdImEF23mQdlt17touHHoCYz62SGZsUrs2T2L6Ax'
+OAUTH_TOKEN = '1334170615-LqxQ7JdNohxttRL0RlSVhDSnPC08Sx5wOkgYW5T'
+OAUTH_TOKEN_SECRET = 'kRr8b4DYVpikZVSsUYt7lD4FWFb3DnlbZwIud1Qy6w9lE'
 
 num_of_features = 7
 num_of_topics = 1
@@ -25,7 +29,7 @@ for i in range(num_of_topics):
     topics.append(name)
 
 outfile = open("test.txt", "w")
-total_count = 500
+total_count = 100
 count_per_search = 100
 topic_counter = 0
 for topic in topics:
@@ -75,11 +79,13 @@ for topic in topics:
             if user_url:
                 t.has_url = 1
             # Create tweet characteristics to write to file
-            tweet_str = str(t.length_tweet) + "|" + str(t.num_words) + "|" + str(t.num_unique_chars) + "|" \
-                        + str(t.num_hashtags) + "|" + str(t.retweet_cnt) + "|" + str(t.num_swear_words) + "|" \
+            tweet_str =  str(t.length_tweet) + "|" + str(t.num_words) + "|" + str(t.num_unique_chars) + "|" \
+                        + str(t.num_hashtags) + "|" + "Retweets:"+str(t.retweet_cnt) + "|" + str(t.num_swear_words) + "|" \
                         + str(t.num_at_emotions) + "|" \
-                        + str(t.num_followee) + "|" \
-                        + str(t.annotate()) + "|"
+                        + "Registration age:"+str(t.registration_age) + "|" + "Followers:"+str(t.num_followers) + "|" + "Followee:"+str(t.num_followee) + "|" \
+                        + "Is verified:"+str(t.is_verified) + "|" + "Len desc:"+str(t.len_desc) + "|" + "Len Screen name:"+str(t.len_screen_name) + "|" \
+                        + "Has url:"+str(t.has_url) + "|" \
+                        + "Annotation:"+str(t.annotate()) + "|"
             print tweet_str
             outfile.write(tweet_str)
             outfile.write("\n")
