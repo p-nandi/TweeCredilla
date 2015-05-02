@@ -1,3 +1,4 @@
+import pickle
 # http://en.wiktionary.org/wiki/Category:English_swear_words
 swear_words = {"arse", "ass", "asshole", "bastard", "bitch", "bloody", "bollocks", "child-fucker",
                "Christ on a bike", "Christ on a cracker", "cunt", "damn", "fuck", "goddamn", "godsdamn"
@@ -5,7 +6,10 @@ swear_words = {"arse", "ass", "asshole", "bastard", "bitch", "bloody", "bollocks
                "Jesus wept", "Jesus, Mary and Joseph", "Judas Priest", "motherfucker",  "shit"
                "shit ass", "shitass", "son of a bitch", "son of a motherless goat", "son of a whore",
                "sweet Jesus"}
-
+fp = open("posW","r+")
+fn = open("posN","r+")
+positiveWords = pickle.load(fp)
+negativeWords = pickle.load(fn)
 
 def count_unique_chars(inp):
     d = {}
@@ -33,3 +37,21 @@ def file_len(fname):
         for i, l in enumerate(f):
            cnt += 1
     return cnt
+
+
+def count_pos_words(inp):
+    count = 0;
+    words = inp.split();
+    for word in words:
+        if word in positiveWords:
+            count = count + 1
+    return count
+
+
+def count_neg_words(inp):
+    count = 0;
+    words = inp.split();
+    for word in words:
+        if word in negativeWords:
+            count = count + 1
+    return count
