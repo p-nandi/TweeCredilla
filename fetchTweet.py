@@ -4,10 +4,7 @@ import CommonUtil
 from Tweet import Tweet
 import numpy as np
 from scipy.io import loadmat
-CONSUMER_KEY = '2GvrOLlhgIXuo0oObvOXWqKsO'
-CONSUMER_SECRET = 'BDnQLqmoQmSdImEF23mQdlt17touHHoCYz62SGZsUrs2T2L6Ax'
-OAUTH_TOKEN = '1334170615-LqxQ7JdNohxttRL0RlSVhDSnPC08Sx5wOkgYW5T'
-OAUTH_TOKEN_SECRET = 'kRr8b4DYVpikZVSsUYt7lD4FWFb3DnlbZwIud1Qy6w9lE'
+
 num_of_features = 7
 num_of_topics = 1
 auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET,
