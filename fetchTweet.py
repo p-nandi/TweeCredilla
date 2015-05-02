@@ -1,9 +1,13 @@
 import twitter
 import json
 import CommonUtil
+from Tweet import Tweet
 import numpy as np
 from scipy.io import loadmat
-
+CONSUMER_KEY = '2GvrOLlhgIXuo0oObvOXWqKsO'
+CONSUMER_SECRET = 'BDnQLqmoQmSdImEF23mQdlt17touHHoCYz62SGZsUrs2T2L6Ax'
+OAUTH_TOKEN = '1334170615-LqxQ7JdNohxttRL0RlSVhDSnPC08Sx5wOkgYW5T'
+OAUTH_TOKEN_SECRET = 'kRr8b4DYVpikZVSsUYt7lD4FWFb3DnlbZwIud1Qy6w9lE'
 num_of_features = 7
 num_of_topics = 1
 auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET,
@@ -24,8 +28,8 @@ for i in range(num_of_topics):
     topics.append(name)
 
 outfile = open("test.txt", "w")
-total_count = 1
-count_per_search = 1
+total_count = 500
+count_per_search = 100
 topic_counter = 0
 for topic in topics:
     topic_counter += 1
@@ -39,43 +43,47 @@ for topic in topics:
         search_results_len = len(statuses)
         # per tweet processing
         while row_num < count_per_search:
+            t = Tweet()
             status = statuses[row_num]
             print status
             resp = json.dumps(status, indent=4)
             print resp
             text = status["text"]
+            t.text = text
             # Message based features
-            length_tweet = len(text)
-            num_words = len(text.split())
-            num_unique_chars = CommonUtil.count_unique_chars(text)
-            num_hashtags = text.count("#")
-            retweet_cnt = status["retweet_count"]
+            t.length_tweet = len(text)
+            t.num_words = len(text.split())
+            t.num_unique_chars = CommonUtil.count_unique_chars(text)
+            t.num_hashtags = text.count("#")
+            t.retweet_cnt = status["retweet_count"]
             max_id = status["id"]
-            num_swear_words = CommonUtil.count_swear_words(text)
-            num_at_emotions = text.count("@")
+            t.num_swear_words = CommonUtil.count_swear_words(text)
+            t.num_at_emotions = text.count("@")
 
             # Source based Features
             user_features = status["user"]
-            registration_age = CommonUtil.count_num_days_from_today(user_features["created_at"])
-            num_followers = user_features["followers_count"]
-            num_followee = user_features["friends_count"]
-            ratio_foll_friends = num_followers / num_followee
+            t.registration_age = CommonUtil.count_num_days_from_today(user_features["created_at"])
+            t.num_followers = user_features["followers_count"]
+            t.num_followee = user_features["friends_count"]
+            if t.num_followee !=0:
+                   t.ratio_foll_followee = t.num_followers / t.num_followee
             is_verified = user_features["verified"]
             if is_verified:
-                is_verified = 1
+                t.is_verified = 1
             else:
-                is_verified = 0
-            len_desc = len(user_features["description"])
-            len_screen_name = len(user_features["screen_name"])
+                t.is_verified = 0
+            t.len_desc = len(user_features["description"])
+            t.len_screen_name = len(user_features["screen_name"])
             user_url = user_features["url"]
             if user_url:
-                has_url = 1
+                t.has_url = 1
             # Create tweet characteristics to write to file
-            tweet_str = str(length_tweet) + "|" + str(num_words) + "|" + str(num_unique_chars) + "|" \
-                        + str(num_hashtags) + "|" + str(retweet_cnt) + "|" + str(num_swear_words) + "|" \
-                        + str(num_at_emotions)
-
-
+            tweet_str = str(t.length_tweet) + "|" + str(t.num_words) + "|" + str(t.num_unique_chars) + "|" \
+                        + str(t.num_hashtags) + "|" + str(t.retweet_cnt) + "|" + str(t.num_swear_words) + "|" \
+                        + str(t.num_at_emotions) + "|" \
+                        + str(t.num_followee) + "|" \
+                        + str(t.annotate()) + "|"
+            print tweet_str
             outfile.write(tweet_str)
             outfile.write("\n")
             row_num += 1
