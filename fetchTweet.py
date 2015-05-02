@@ -56,8 +56,10 @@ for topic in topics:
 
             # Source based Features
             user_features = status["user"]
+            registration_age = CommonUtil.count_num_days_from_today(user_features["created_at"])
             num_followers = user_features["followers_count"]
-            num_friends = user_features["friends_count"]
+            num_followee = user_features["friends_count"]
+            ratio_foll_friends = num_followers / num_followee
             is_verified = user_features["verified"]
             if is_verified:
                 is_verified = 1
@@ -66,12 +68,8 @@ for topic in topics:
             len_desc = len(user_features["description"])
             len_screen_name = len(user_features["screen_name"])
             user_url = user_features["url"]
-            print "user_url", user_url
-            has_url = 0
             if user_url:
                 has_url = 1
-            user_creation_date = user_features["created_at"]
-            print user_creation_date
             # Create tweet characteristics to write to file
             tweet_str = str(length_tweet) + "|" + str(num_words) + "|" + str(num_unique_chars) + "|" \
                         + str(num_hashtags) + "|" + str(retweet_cnt) + "|" + str(num_swear_words) + "|" \

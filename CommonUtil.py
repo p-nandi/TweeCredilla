@@ -1,4 +1,6 @@
 import pickle
+import time
+from datetime import datetime
 # http://en.wiktionary.org/wiki/Category:English_swear_words
 swear_words = {"arse", "ass", "asshole", "bastard", "bitch", "bloody", "bollocks", "child-fucker",
                "Christ on a bike", "Christ on a cracker", "cunt", "damn", "fuck", "goddamn", "godsdamn"
@@ -55,3 +57,9 @@ def count_neg_words(inp):
         if word in negativeWords:
             count = count + 1
     return count
+
+def count_num_days_from_today(inp):
+    d1 = datetime.strptime(inp, '%a %b %d %H:%M:%S +0000 %Y')
+    today = time.strftime('%Y-%m-%d')
+    d2 = datetime.strptime(today, '%Y-%m-%d')
+    return (d2-d1).days
