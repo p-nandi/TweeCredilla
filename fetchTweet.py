@@ -3,10 +3,7 @@ import json
 import CommonUtil
 import numpy as np
 from scipy.io import loadmat
-CONSUMER_KEY = '2GvrOLlhgIXuo0oObvOXWqKsO'
-CONSUMER_SECRET = 'BDnQLqmoQmSdImEF23mQdlt17touHHoCYz62SGZsUrs2T2L6Ax'
-OAUTH_TOKEN = '1334170615-LqxQ7JdNohxttRL0RlSVhDSnPC08Sx5wOkgYW5T'
-OAUTH_TOKEN_SECRET = 'kRr8b4DYVpikZVSsUYt7lD4FWFb3DnlbZwIud1Qy6w9lE'
+
 num_of_features = 7
 num_of_topics = 10
 auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET,
@@ -15,8 +12,9 @@ auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET,
 twitter_api = twitter.Twitter(auth=auth)
 
 US_WOE_ID = 23424977
+WORLD_WOE_ID = 1
 
-us_trends = twitter_api.trends.place(_id=US_WOE_ID)
+us_trends = twitter_api.trends.place(_id=WORLD_WOE_ID)
 
 # print the top 10 tweets
 topics = []
@@ -26,7 +24,7 @@ for i in range(num_of_topics):
     topics.append(name)
 
 outfile = open("test.txt", "w")
-count = 10
+count = 101
 for topic in topics:
     search_results = twitter_api.search.tweets(q=topic, count=count)
     statuses = search_results["statuses"]
