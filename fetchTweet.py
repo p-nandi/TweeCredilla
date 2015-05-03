@@ -26,7 +26,8 @@ for i in range(num_of_topics):
     print name
     topics.append(name)
 
-outfile = open("test.txt", "w")
+outfile1 = open("full_info.txt", "w")
+outfile2 = open("matrix_info.txt", "w")
 total_count = 100
 count_per_search = 100
 topic_counter = 0
@@ -80,30 +81,39 @@ for topic in topics:
                 t.has_url = 1
             # Create tweet characteristics to write to file
             annotation = t.annotate()
-            tweet_str =  smart_str(text) + str(t.length_tweet) + "|" + str(t.num_words) + "|" + str(t.num_unique_chars) + "|" \
-                        + str(t.num_hashtags) + "|" + "Retweets:"+str(t.retweet_cnt) + "|" + str(t.num_swear_words) + "|" \
-                        + str(t.num_at_emotions) + "|" \
+            tweet_str1 =  smart_str(text) + str(t.length_tweet) + "|" + "Num words:"+ str(t.num_words) + "|" + "Num unique chars:"+ str(t.num_unique_chars) + "|" \
+                        + "Num #:"+str(t.num_hashtags) + "|" + "Retweets:"+ str(t.retweet_cnt) + "|" + "Swear words:"+ str(t.num_swear_words) + "|" \
+                        + "Num @:"+str(t.num_at_emotions) + "|" \
                         + "Registration age:"+str(t.registration_age) + "|" + "Followers:"+str(t.num_followers) + "|" + "Followee:"+str(t.num_followee) + "|" \
                         + "Is verified:"+str(t.is_verified) + "|" + "Len desc:"+str(t.len_desc) + "|" + "Len Screen name:"+str(t.len_screen_name) + "|" \
                         + "Has url:"+str(t.has_url) + "|" \
                         + "Annotation:"+str(annotation) + "|"
+            tweet_str2 =  str(t.length_tweet) + "|" + str(t.num_words) + "|" + str(t.num_unique_chars) + "|" \
+                        + str(t.num_hashtags) + "|" + str(t.retweet_cnt) + "|" +  str(t.num_swear_words) + "|" \
+                        + str(t.num_at_emotions) + "|" \
+                        + str(t.registration_age) + "|" + str(t.num_followers) + "|" + str(t.num_followee) + "|" \
+                        + str(t.is_verified) + "|" + str(t.len_desc) + "|" + str(t.len_screen_name) + "|" \
+                        + str(t.has_url) + "|" \
+                        + str(annotation)
 
             if annotation == 1:
-                num_positive +=1
+                num_positive += 1
             else:
                 num_negative +=1
-            outfile.write(tweet_str)
-            outfile.write("\n")
+            outfile1.write(tweet_str1)
+            outfile1.write("\n")
+            outfile2.write(tweet_str2)
+            outfile2.write("\n")
             row_num += 1
         count_fetched += search_results_len
-        print "Num of positive tweets ", num_positive
-        print "Num of negative tweets ", num_negative
     print "-------------------------------------------------"
-outfile.close()
-
+outfile1.close()
+outfile2.close()
+print "Num of positive tweets ", num_positive
+print "Num of negative tweets ", num_negative
 #read file
 
-f = open("test.txt", "r")
+f = open("matrix_info.txt", "r")
 lineCnt = 0
 for line in f:
     #print line
