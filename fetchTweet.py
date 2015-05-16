@@ -5,9 +5,13 @@ from Tweet import Tweet
 from django.utils.encoding import smart_str, smart_unicode
 import numpy as np
 from scipy.io import loadmat
+from sklearn import svm
+import pickle
 
-
-
+CONSUMER_KEY = "lu5F1w3PrOWa3Y6UlDlcvLKhe"
+CONSUMER_SECRET = "x9NrHxTdpqv6MszUsTrdrRNEr9T2fBk07I4ujJRSOCwcj9CnUC"
+OAUTH_TOKEN = "106366207-b47z1yrlz61YkNHeNGjn2Orx6k9JCttnmG0JkLia"
+OAUTH_TOKEN_SECRET = "Zonq1OHjSCasTxqbyniqYXFpc4vIYa6SXSx9k9udNMJI4"
 
 
 num_of_features = 7
@@ -48,7 +52,7 @@ for topic in topics:
         search_results_len = len(statuses)
         # print "search_results_len" , search_results_len
         # per tweet processing
-        while row_num < count_per_search and row_num < search_results_len:
+        while row_num < count_per_search: # and row_num < search_results_len:
             t = Tweet()
             status = statuses[row_num]
             #print status
@@ -115,7 +119,44 @@ outfile1.close()
 outfile2.close()
 print "Num of positive tweets ", num_positive
 print "Num of negative tweets ", num_negative
-#read file
+
+
+
+def preprocess():
+    n_features = 14
+    n_sample = 5000
+    train_data = np.zeros((n_sample, n_features+1), dtype=np.int)
+    f = open("matrix_info.txt", "r")
+    row_index = 0
+    for line in f:
+        row_data=line.split("|")
+        column_index = 0
+        for data in row_data:
+            train_data[row_index][column_index] = data
+            column_index += 1
+        row_index += 1
+    f.close()
+    train_label = train_data[:, n_features:]
+    train_data = train_data[:, 0:n_features]
+    return train_data, train_label
+
+
+def run_svm(train_data, train_label):
+    train_label = train_label.ravel()
+    # Radial basis function , gamma = 1.0
+    print('\n--------Radial basis function , Gamma Default-------------------')
+    clf = svm.SVC(kernel='linear', gamma=0.0);
+    clf.fit(train_data, train_label);
+    predicted_label = clf.predict(train_data)
+    print('\n Radial basis function Gamma default Train set Accuracy:' + str(100*np.mean((predicted_label == train_label).astype(float))) + '%')
+    return clf
+
+# Write classifier to a pickle file
+train_data, train_label = preprocess()
+clf = run_svm(train_data, train_label)
+params_file = open('params','wb')
+pickle.dump(clf, params_file)
+params_file.close()
 
 # f = open("matrix_info.txt", "r")
 # lineCnt = 0
