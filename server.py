@@ -5,11 +5,9 @@ import numpy as np
 from scipy.io import loadmat
 from autobahn.twisted.websocket import WebSocketServerProtocol, \
     WebSocketServerFactory
+import RunSVM
 
-CONSUMER_KEY = 'vd25o5blsk9T9IBjZUXgtdlTF'
-CONSUMER_SECRET = '8qY6uDU8hBJz9JCoamGVLJe01Upo3fKm2NN4jr1NVvBBa84dmu'
-OAUTH_TOKEN = '70677289-pV7SOWATIvoPlyNraeqJXDHNkXdNnvbXa720sKQYM'
-OAUTH_TOKEN_SECRET = '5cbHS2sfEC0UGVIuapTValUzQXwvfi4WAVKNjhVhmRMD2'
+
 
 
 num_of_features = 7
@@ -58,23 +56,11 @@ class MyServerProtocol(WebSocketServerProtocol):
                 search_results = twitter_api.search.tweets(q=event, count=count_per_search)
                 tweets = search_results["statuses"]
         else:
-            search_results = twitter_api.search.tweets(q=payload, count=count_per_search)                       
-            status = search_results["statuses"]
-            row_num = 0
-            textArr = []
-            while row_num < 100:
-                tweet = status[row_num]
-                resp = json.dumps(tweet, indent=4)
-                # print resp
-                text = tweet["text"]
-                for ch in [',', '&amp', ';', '\n', '\t']:
-                    text = text.replace(ch, " ")
-                    
-                textArr.append(text)
-                row_num = row_num + 1
-            print(textArr)
+            topic_name = payload
+            tweet_text_str=RunSVM.fetch_tweets_for_topic(topic_name)
+            print(tweet_text_str)
             self.sendMessage(str(0))
-            self.sendMessage(str(textArr).strip('[]'))
+            self.sendMessage(str(tweet_text_str))
 
 
         if isBinary:

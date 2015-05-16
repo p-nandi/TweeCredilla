@@ -12,6 +12,7 @@ from django.utils.encoding import smart_str, smart_unicode
 
 
 
+
 def preprocess():
     n_features = 14
     n_sample = 5000
@@ -35,7 +36,7 @@ def run_svm(train_data, train_label):
     train_label = train_label.ravel()
     # Radial basis function , gamma = 1.0
     print('\n--------Radial basis function , Gamma Default-------------------')
-    clf = svm.SVC(kernel='linear', gamma=0.0);
+    clf = svm.SVC(kernel='rbf', gamma=0.0);
     clf.fit(train_data, train_label);
     predicted_label = clf.predict(train_data)
     print('\n Radial basis function Gamma default Train set Accuracy:' + str(100*np.mean((predicted_label == train_label).astype(float))) + '%')
@@ -249,10 +250,10 @@ def predict_label(clf):
     return tweet_predict_str
 
 
-train_data, train_label = preprocess()
-clf = run_svm(train_data, train_label)
-fetch_tweets_for_topic('Paul Pierce')
-predict_label(clf)
+# train_data, train_label = preprocess()
+# clf = run_svm(train_data, train_label)
+# fetch_tweets_for_topic('Paul Pierce')
+# predict_label(clf)
 
 
 
