@@ -153,8 +153,44 @@ def predict_label(clf, tweet_attr_list,tweet_text_list):
         outfile.write("\n")
     outfile.close()
 
+def fetch_tweets_for_topic(topic):
+    total_count = 500
+    count_per_search = 100
+    row_num = 0
+    max_id = -1
+    tweet_list = []
+    tweet_text_list = []
+    count_fetched = 0
+    auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET,
+                               CONSUMER_KEY, CONSUMER_SECRET)
 
-train_data, train_label = preprocess()
-clf = run_svm(train_data, train_label)
-tweet_attr_list,tweet_test_list = fetch_new_tweets()
-predict_label(clf,tweet_attr_list,tweet_test_list)
+    twitter_api = twitter.Twitter(auth=auth)
+    while count_fetched < total_count:
+            row_num = 0
+            search_results = twitter_api.search.tweets(q=topic, count=count_per_search, max_id=max_id)
+            statuses = search_results["statuses"]
+            search_results_len = len(statuses)
+            # per tweet processing
+            while row_num < count_per_search:
+                status = statuses[row_num]
+                resp = json.dumps(status, indent=4)
+                #print resp
+                text = status["text"]
+                tweet_text_list.append(smart_str(text))
+                row_num += 1
+            count_fetched += search_results_len
+    #write the tweets to a file
+    outfile = open("test_tweets.txt", "w")
+    for tweet_text in tweet_text_list:
+        outfile.write(tweet_text)
+    outfile.close()
+    return tweet_text_list
+
+
+# train_data, train_label = preprocess()
+# clf = run_svm(train_data, train_label)
+# tweet_attr_list,tweet_test_list = fetch_new_tweets()
+# predict_label(clf,tweet_attr_list,tweet_test_list)
+
+fetch_tweets_for_topic('Paul Pierce')
+

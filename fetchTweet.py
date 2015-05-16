@@ -8,6 +8,7 @@ from scipy.io import loadmat
 
 
 
+
 num_of_features = 7
 num_of_topics = 1
 auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET,
@@ -18,7 +19,7 @@ twitter_api = twitter.Twitter(auth=auth)
 US_WOE_ID = 23424977
 WORLD_WOE_ID = 1
 
-us_trends = twitter_api.trends.place(_id=WORLD_WOE_ID)
+us_trends = twitter_api.trends.place(_id=US_WOE_ID)
 
 # print the top 10 tweets
 topics = []
@@ -48,9 +49,9 @@ for topic in topics:
         while row_num < count_per_search:
             t = Tweet()
             status = statuses[row_num]
-            print status
+            #print status
             resp = json.dumps(status, indent=4)
-            print resp
+            #print resp
             text = status["text"]
             t.text = text
             # Message based features
