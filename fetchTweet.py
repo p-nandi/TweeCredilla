@@ -7,6 +7,7 @@ import numpy as np
 from scipy.io import loadmat
 
 
+
 num_of_features = 7
 num_of_topics = 1
 auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET,

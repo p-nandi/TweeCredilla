@@ -36,7 +36,7 @@ def run_svm(train_data, train_label):
     train_label = train_label.ravel()
     # Radial basis function , gamma = 1.0
     print('\n--------Radial basis function , Gamma Default-------------------')
-    clf = svm.SVC(kernel='rbf', gamma=0.0);
+    clf = svm.SVC(kernel='linear', gamma=0.0);
     clf.fit(train_data, train_label);
     predicted_label = clf.predict(train_data)
     print('\n Radial basis function Gamma default Train set Accuracy:' + str(100*np.mean((predicted_label == train_label).astype(float))) + '%')
@@ -143,6 +143,8 @@ def predict_label(clf, tweet_attr_list,tweet_text_list):
             column_index += 1
         row_index += 1
     predicted_label = clf.predict(test_data)
+    print "# of credible tweets:" ,np.count_zero(predicted_label)
+    print "# of non-credible tweets:" ,np.count_nonzero(predicted_label)
     pl_index = 0
     for tweet_text in tweet_text_list:
         tweet_text = tweet_text + "|" + str(predicted_label[pl_index])
