@@ -21,7 +21,7 @@ class Tweet:
         self.is_positive = 0
 
     def annotate(self):
-        if self.is_verified == 1 or self.num_followers > 2000 or self.retweet_cnt > 10:
+        if self.is_verified == 1 or self.num_followers > 700 or self.retweet_cnt > 10:
             self.is_positive = 1
         else:
             self.is_positive = 0

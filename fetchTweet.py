@@ -7,8 +7,10 @@ import numpy as np
 from scipy.io import loadmat
 
 
-
-
+CONSUMER_KEY = 'QIdzVCpO7U4VJ8EBt1S5nEjEy'
+CONSUMER_SECRET = 'nvVLGMA5M2BcvjgZnJ6FxfuRRqTYFV4NkFLDY7txS3jFUaViOm'
+OAUTH_TOKEN = '70677289-JBN42DMH1RMIc52G2HKa9IveJgIXYNOJbBmkOYfqB'
+OAUTH_TOKEN_SECRET = 'xseT7QsumIDRIdByNiAXjbznTolzeiQEkjofFPRfbxJ1k'
 
 num_of_features = 7
 num_of_topics = 10
@@ -46,9 +48,8 @@ for topic in topics:
         search_results = twitter_api.search.tweets(q=topic, count=count_per_search, max_id=max_id)
         statuses = search_results["statuses"]
         search_results_len = len(statuses)
-        # print "search_results_len" , search_results_len
         # per tweet processing
-        while row_num < count_per_search and row_num < search_results_len:
+        while row_num < count_per_search:
             t = Tweet()
             status = statuses[row_num]
             #print status
