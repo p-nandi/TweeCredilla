@@ -8,10 +8,7 @@ from scipy.io import loadmat
 from sklearn import svm
 import pickle
 
-CONSUMER_KEY = "lu5F1w3PrOWa3Y6UlDlcvLKhe"
-CONSUMER_SECRET = "x9NrHxTdpqv6MszUsTrdrRNEr9T2fBk07I4ujJRSOCwcj9CnUC"
-OAUTH_TOKEN = "106366207-b47z1yrlz61YkNHeNGjn2Orx6k9JCttnmG0JkLia"
-OAUTH_TOKEN_SECRET = "Zonq1OHjSCasTxqbyniqYXFpc4vIYa6SXSx9k9udNMJI4"
+
 
 
 num_of_features = 7
@@ -28,6 +25,7 @@ us_trends = twitter_api.trends.place(_id=US_WOE_ID)
 
 # print the top 10 tweets
 topics = []
+print "Training Tweets:"
 for i in range(num_of_topics):
     name = us_trends[0]["trends"][i]["name"]
     print name
@@ -114,7 +112,7 @@ for topic in topics:
             outfile2.write("\n")
             row_num += 1
         count_fetched += search_results_len
-    print "-------------------------------------------------"
+    # print "-------------------------------------------------"
 outfile1.close()
 outfile2.close()
 print "Num of positive tweets ", num_positive
@@ -144,11 +142,11 @@ def preprocess():
 def run_svm(train_data, train_label):
     train_label = train_label.ravel()
     # Radial basis function , gamma = 1.0
-    print('\n--------Radial basis function , Gamma Default-------------------')
+    print('\n--------Linear basis function , Gamma Default-------------------')
     clf = svm.SVC(kernel='linear', gamma=0.0);
     clf.fit(train_data, train_label);
     predicted_label = clf.predict(train_data)
-    print('\n Radial basis function Gamma default Train set Accuracy:' + str(100*np.mean((predicted_label == train_label).astype(float))) + '%')
+    print('\n Linear basis function Gamma default Train set Accuracy:' + str(100*np.mean((predicted_label == train_label).astype(float))) + '%')
     return clf
 
 # Write classifier to a pickle file

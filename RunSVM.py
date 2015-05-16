@@ -10,10 +10,7 @@ import CommonUtil
 from django.utils.encoding import smart_str, smart_unicode
 import pickle
 
-CONSUMER_KEY = 'QIdzVCpO7U4VJ8EBt1S5nEjEy'
-CONSUMER_SECRET = 'nvVLGMA5M2BcvjgZnJ6FxfuRRqTYFV4NkFLDY7txS3jFUaViOm'
-OAUTH_TOKEN = '70677289-JBN42DMH1RMIc52G2HKa9IveJgIXYNOJbBmkOYfqB'
-OAUTH_TOKEN_SECRET = 'xseT7QsumIDRIdByNiAXjbznTolzeiQEkjofFPRfbxJ1k'
+
 
 def preprocess():
     n_features = 14
