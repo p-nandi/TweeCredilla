@@ -9,9 +9,10 @@ import json
 import CommonUtil
 from django.utils.encoding import smart_str, smart_unicode
 
-
-
-
+CONSUMER_KEY = 'QIdzVCpO7U4VJ8EBt1S5nEjEy'
+CONSUMER_SECRET = 'nvVLGMA5M2BcvjgZnJ6FxfuRRqTYFV4NkFLDY7txS3jFUaViOm'
+OAUTH_TOKEN = '70677289-JBN42DMH1RMIc52G2HKa9IveJgIXYNOJbBmkOYfqB'
+OAUTH_TOKEN_SECRET = 'xseT7QsumIDRIdByNiAXjbznTolzeiQEkjofFPRfbxJ1k'
 
 def preprocess():
     n_features = 14
@@ -249,11 +250,11 @@ def predict_label(clf):
     outfile.close()
     return tweet_predict_str
 
-
-# train_data, train_label = preprocess()
-# clf = run_svm(train_data, train_label)
-# fetch_tweets_for_topic('Paul Pierce')
-# predict_label(clf)
+def classify():
+    train_data, train_label = preprocess()
+    clf = run_svm(train_data, train_label)
+    tweet_predict_str = predict_label(clf)
+    return tweet_predict_str
 
 
 
