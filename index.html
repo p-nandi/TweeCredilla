@@ -8,7 +8,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
 
-	<title>Concept HTML5 Layout</title>
+	<title>Credibility Ranking of Tweets</title>
     <meta name="keywords" content="" />
 	<meta name="description" content="" />
 <!-- 
@@ -40,12 +40,13 @@ http://www.templatemo.com/preview/templatemo_397_concept
  	var head = "<div class='col-md-4 col-sm-6'>";
  	var subHead = "<div class='product-item'>";
  	var close = "</div>";
+	var regexAstralSymbols = /[\uD800-\uDBFF][\uDC00-\uDFFF]/g;
 
 	 window.onload = function() {
 
 	 		$('#link1').text("Test Test");
 	 		// alert();
-            socket = new WebSocket("ws://127.0.0.1:9000");
+            socket = new WebSocket("ws://54.148.149.139:9000");
             socket.binaryType = "arraybuffer";
             socket.onopen = function() {
                console.log("Connected....!");
@@ -93,7 +94,7 @@ http://www.templatemo.com/preview/templatemo_397_concept
 							console.log(arr[i]);
 							if(arr[i] != "")
 							{
-								var para = head + subHead + "<p>"+arr[i]+"</p>" + close + close;							
+								var para = head + subHead + "<p>"+arr[i].replace(regexAstralSymbols, ' ')+"</p>" + close + close;							
 				         		// para.innerHTML = arr[i];
 								$('#tweetDiv').append(para);								
 							}
@@ -123,14 +124,21 @@ http://www.templatemo.com/preview/templatemo_397_concept
 								var tweetArr = arrTweet[i].split("|");
 								var tweetText = tweetArr[0];
 								var tweetClass;
-								console.log(tweetArr[1] + " " + typeof(tweetArr[1]));
-								if(tweetArr[1] == "CREDIBLE")
-									tweetClass = "</br><h3 style='background-color:#00FF00'> CREDIBLE </h3>";
-								else
-									tweetClass = "</br><h3 style='background-color:#FF0000'> NON CREDIBLE </h3>";
+								// console.log(tweetArr[1] + " " + typeof(tweetArr[1]));
+								if(tweetArr[1] == "1")
+								{
+									console.log("CREDIBLE");
+									tweetClass = "</br><h3 style='background-color:#00FF00;color:black;'> CREDIBLE </h3>";
+								}
+									
+								else if (tweetArr[1] == "0")
+								{
+									console.log("NON CREDIBLE");
+									tweetClass = "</br><h3 style='background-color:#FF0000;color:white;'> NON CREDIBLE </h3>";
+								}
 
 								// console.log(tweetText+"|"+tweetClass);
-								var para = head + subHead + "<p>"+tweetText+"</p>"+ tweetClass + close + close;
+								var para = head + subHead + "<p style='color:grey;'>"+tweetText.replace(regexAstralSymbols, ' ')+"</p>"+ tweetClass + close + close;
 								$('#tweetDiv2').append(para);								
 							}
 							
