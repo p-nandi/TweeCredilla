@@ -22,8 +22,11 @@ jQuery(document).ready(function($){
 
 	$(".main_menu a.templatemo_home, .responsive_menu a.templatemo_home").click(function(){
 		$("#menu-container .homepage").addClass("animated fadeInDown").show();
+     	$('#tweetDiv').hide();
+     	$('#tweetDiv2').hide();
 		$(this).addClass('active');
 		$('.templatemo_page2').text('');
+		$('.templatemo_page3').text('');
 		$(".main_menu a.templatemo_page2, .responsive_menu a.templatemo_page2").removeClass('active');
 		$(".main_menu a.templatemo_page3, .responsive_menu a.templatemo_page3").removeClass('active');
 		$(".main_menu a.templatemo_page4, .responsive_menu a.templatemo_page4").removeClass('active');
@@ -32,6 +35,7 @@ jQuery(document).ready(function($){
 	});
 
 	$(".main_menu a.templatemo_page2, .responsive_menu a.templatemo_page2").click(function(){
+		// alert("M here too");
 		$("#menu-container .products").addClass("animated fadeInDown").show();
 		$(this).addClass('active');
 		$(".main_menu a.templatemo_home, .responsive_menu a.templatemo_home").removeClass('active');
@@ -42,6 +46,7 @@ jQuery(document).ready(function($){
 	});
 
 	$(".main_menu a.templatemo_page3, .responsive_menu a.templatemo_page3").click(function(){
+		// alert("M here too");
 		$("#menu-container .services").addClass("animated fadeInDown").show();
 		$(".our-services").show();
 		$(this).addClass('active');

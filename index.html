@@ -117,22 +117,21 @@ http://www.templatemo.com/preview/templatemo_397_concept
 			         	$('#tweetDiv2').text("");
 						while(i < length)
 						{
-							console.log(arrTweet[i]);
+							// console.log(arrTweet[i]);
 							if(arrTweet[i] != "")
 							{
 								var tweetArr = arrTweet[i].split("|");
 								var tweetText = tweetArr[0];
 								var tweetClass;
-
-								if(tweetArr[0] == 1)
-									tweetClass = "CREDIBLE";
+								console.log(tweetArr[1] + " " + typeof(tweetArr[1]));
+								if(tweetArr[1] == "CREDIBLE")
+									tweetClass = "</br><h3 style='background-color:#00FF00'> CREDIBLE </h3>";
 								else
-									tweetClass = "NON CREDIBLE";
-								
-								console.log(tweetText+"|"+tweetClass);
-								var para = head + subHead + "<p>"+tweetText+"</p></br><h3>"+ tweetClass +"</h3>" + close + close;
-								$('#tweetDiv2').append(para);
-								// 
+									tweetClass = "</br><h3 style='background-color:#FF0000'> NON CREDIBLE </h3>";
+
+								// console.log(tweetText+"|"+tweetClass);
+								var para = head + subHead + "<p>"+tweetText+"</p>"+ tweetClass + close + close;
+								$('#tweetDiv2').append(para);								
 							}
 							
 							i++;
@@ -174,21 +173,33 @@ http://www.templatemo.com/preview/templatemo_397_concept
 
          function anchorclick(element)
          {
-         	var id = element.id;         	
-         	num = id.substring(3,4);   
+         	var id = element.id; 
+         	if(id.length == 4)        	
+         		num = id.substring(3,4);   
+     		else
+     			num = id.substring(3,5);    
+
          	var trend = $('#lbl'+num).text();  		
          	socket.send(trend);
          	$('.templatemo_page2').trigger("click");
          	$('.templatemo_page2').text("Current Tweets for "+trend);
          	$('.templatemo_page3').text("Rumour Classification for "+trend);
+         	$('#tweetDiv2').hide();
          	// var tweetDiv = $('#tweetDiv').attr('id');
          	// alert("ID got: "+tweetDiv);
          }
-
+          function SearchTweets(element)
+         {
+			// alert("M here");
+         	$('#tweetDiv2').hide();
+         	$('#tweetDiv').show();
+         }  
          function Classification(element)
          {
-
-         }
+			// alert("M here");
+         	$('#tweetDiv').hide();
+         	$('#tweetDiv2').show();
+         }         
       </script>
 
 </head>
@@ -211,8 +222,8 @@ http://www.templatemo.com/preview/templatemo_397_concept
 			<div class="responsive_menu">
 				<ul>
 					<li><a class="show-1 templatemo_home" href="#">Current Trends</a></li>
-					<li><a class="show-2 templatemo_page2" href="#" id = "link1"></a></li>
-					<li><a class="show-2 templatemo_page3" href="#" id = "link2"></a></li>
+					<li><a class="show-2 templatemo_page2" href="#" id = "link1" onclick = "SearchTweets(this)"></a></li>
+					<li><a class="show-2 templatemo_page3" href="#" id = "link2" onclick = "Classification(this)"></a></li>
 					<!-- <li><a class="show-3 templatemo_page3" href="#" id = "link2">Credibility Filtering</a></li> -->
 				</ul>
 			</div>
@@ -226,8 +237,8 @@ http://www.templatemo.com/preview/templatemo_397_concept
 					<div class="col-md-12 main_menu">
 						<ul>
 							<li><a class="show-1 templatemo_home" href="#">Current Trends</a></li>
-							<li><a class="show-2 templatemo_page2" href="#" id = "link1"></a></li>
-							<li><a class="show-2 templatemo_page3" href="#" id = "link2"></a></li>
+							<li><a class="show-2 templatemo_page2" href="#" id = "link1" onclick = "SearchTweets(this)"></a></li>
+							<li><a class="show-2 templatemo_page3" href="#" id = "link2" onclick = "Classification(this)"></a></li>
 							<!-- Current Tweets -->
 							<!-- <li><a class="show-3 templatemo_page3" href="#" id = "link2">Credibility Filtering</a></li> -->
 						</ul>
@@ -238,7 +249,7 @@ http://www.templatemo.com/preview/templatemo_397_concept
 	</div> <!-- /.site-header -->
 	
 	<div id="menu-container">
-		<div class="content homepage" id="menu-1">
+<div class="content homepage" id="menu-1">
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-md-2 col-sm-6 col-md-offset-1">
@@ -313,24 +324,27 @@ http://www.templatemo.com/preview/templatemo_397_concept
 					</div> <!-- /.col-md-2 -->
 				</div> <!-- /.row -->
 			</div> <!-- /.slide-item -->
+		</div> <!-- /.homepage --><!-- /.slide-item -->
 		</div> <!-- /.homepage -->
 
 		<div class="content products" id="menu-2">
 			<div class="container">
-					<div class="row" id = "tweetDiv">
+				<div class="row" id = "tweetDiv">
 						
-					</div> <!-- /.row -->
+				</div> <!-- /.row -->
+				<div class="row" id = "tweetDiv2">
+						
+				</div> <!-- /.row -->				
 			</div> <!-- /.slide-item -->
 		</div> <!-- /.products -->
 
-		<div class="content products" id="menu-3">
+		<div class="content services" id="menu-3">
 			<div class="container">
-					<div class="row" id = "tweetDiv2">
+				<!-- <div class="row" id = "tweetDiv2">
 						
-					</div> <!-- /.row -->
+				</div> --> <!-- /.row -->
 			</div> <!-- /.slide-item -->
-		</div> <!-- /.products -->	
-
+		</div> <!-- /.services -->	
 		
 	</div> <!-- /#menu-container -->
 
