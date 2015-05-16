@@ -7,7 +7,10 @@ from autobahn.twisted.websocket import WebSocketServerProtocol, \
     WebSocketServerFactory
 import RunSVM
 
-
+CONSUMER_KEY = 'QIdzVCpO7U4VJ8EBt1S5nEjEy'
+CONSUMER_SECRET = 'nvVLGMA5M2BcvjgZnJ6FxfuRRqTYFV4NkFLDY7txS3jFUaViOm'
+OAUTH_TOKEN = '70677289-JBN42DMH1RMIc52G2HKa9IveJgIXYNOJbBmkOYfqB'
+OAUTH_TOKEN_SECRET = 'xseT7QsumIDRIdByNiAXjbznTolzeiQEkjofFPRfbxJ1k'
 
 
 num_of_features = 7
@@ -40,7 +43,7 @@ class MyServerProtocol(WebSocketServerProtocol):
         count_per_search = 100
 
         if payload == "Show Trends":
-            us_trends = twitter_api.trends.place(_id=WORLD_WOE_ID)
+            us_trends = twitter_api.trends.place(_id=US_WOE_ID)
             print us_trends
             topics = []
             for i in range(num_of_topics):
@@ -61,7 +64,8 @@ class MyServerProtocol(WebSocketServerProtocol):
             print(tweet_text_str)
             self.sendMessage(str(0))
             self.sendMessage(str(tweet_text_str))
-
+            self.sendMessage(str(2))
+            self.sendMessage(str(RunSVM.classify()))
 
         if isBinary:
             print("Binary message received: {0} bytes".format(len(payload)))
