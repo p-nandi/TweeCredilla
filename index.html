@@ -122,9 +122,13 @@ http://www.templatemo.com/preview/templatemo_397_concept
 							{
 								var tweetArr = arrTweet[i].split("|");
 								var tweetText = tweetArr[0];
-								var tweetClass = "CREDIBLE";
-								if(tweetArr[1] == "0")
+								var tweetClass;
+
+								if(tweetArr[0] == 1)
+									tweetClass = "CREDIBLE";
+								else
 									tweetClass = "NON CREDIBLE";
+								
 								console.log(tweetText+"|"+tweetClass);
 								var para = head + subHead + "<p>"+tweetText+"</p></br><h3>"+ tweetClass +"</h3>" + close + close;
 								$('#tweetDiv2').append(para);
