@@ -10,7 +10,7 @@ from scipy.io import loadmat
 
 
 num_of_features = 7
-num_of_topics = 1
+num_of_topics = 10
 auth = twitter.oauth.OAuth(OAUTH_TOKEN, OAUTH_TOKEN_SECRET,
                            CONSUMER_KEY, CONSUMER_SECRET)
 
@@ -30,14 +30,14 @@ for i in range(num_of_topics):
 
 outfile1 = open("full_info.txt", "w")
 outfile2 = open("matrix_info.txt", "w")
-total_count = 100
+total_count = 500
 count_per_search = 100
 topic_counter = 0
 num_positive = 0
 num_negative = 0
 for topic in topics:
     topic_counter += 1
-    print "topic #", topic_counter
+    # print "topic #", topic_counter
     count_fetched = 0
     max_id = -1
     while count_fetched < total_count:
@@ -115,11 +115,12 @@ print "Num of positive tweets ", num_positive
 print "Num of negative tweets ", num_negative
 #read file
 
-f = open("matrix_info.txt", "r")
-lineCnt = 0
-for line in f:
-    #print line
-    lineCnt+=1
-
-print lineCnt
+# f = open("matrix_info.txt", "r")
+# lineCnt = 0
+# for line in f:
+#     #print line
+#     lineCnt+=1
+# f.close()
+#
+# print lineCnt
 

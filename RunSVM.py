@@ -12,7 +12,6 @@ from django.utils.encoding import smart_str, smart_unicode
 
 
 
-
 def preprocess():
     n_features = 14
     n_sample = 5000
@@ -129,32 +128,9 @@ def fetch_new_tweets():
     return tweet_list , tweet_text_list
 
 
-def predict_label(clf, tweet_attr_list,tweet_text_list):
-    n_features = 14
-    row_index = 0
-    n_sample = len(tweet_attr_list)
-    test_data = np.zeros((n_sample, n_features), dtype=np.int)
-    outfile = open("tweet_prediction.txt", "w")
-    for tweet in tweet_attr_list:
-        row_data = tweet.split("|")
-        column_index = 0
-        for data in row_data:
-            test_data[row_index][column_index] = data
-            column_index += 1
-        row_index += 1
-    predicted_label = clf.predict(test_data)
-    print "# of credible tweets:" ,np.count_zero(predicted_label)
-    print "# of non-credible tweets:" ,np.count_nonzero(predicted_label)
-    pl_index = 0
-    for tweet_text in tweet_text_list:
-        tweet_text = tweet_text + "|" + str(predicted_label[pl_index])
-        pl_index += 1
-        outfile.write(tweet_text)
-        outfile.write("\n")
-    outfile.close()
 
 def fetch_tweets_for_topic(topic):
-    total_count = 500
+    total_count = 100
     count_per_search = 100
     row_num = 0
     max_id = -1
@@ -172,25 +148,111 @@ def fetch_tweets_for_topic(topic):
             search_results_len = len(statuses)
             # per tweet processing
             while row_num < count_per_search:
+                t = Tweet()
                 status = statuses[row_num]
+                #print status
                 resp = json.dumps(status, indent=4)
                 #print resp
                 text = status["text"]
+                text = smart_str(text)
+                text = text.replace("\n", " ")
+                text = text.replace("|", "")
+                text = text.replace("$", "")
+                t.text = text
+                # Message based features
+                t.length_tweet = len(text)
+                t.num_words = len(text.split())
+                t.num_unique_chars = CommonUtil.count_unique_chars(text)
+                t.num_hashtags = text.count("#")
+                t.retweet_cnt = status["retweet_count"]
+                max_id = status["id"]
+                t.num_swear_words = CommonUtil.count_swear_words(text)
+                t.num_at_emotions = text.count("@")
+
+                # Source based Features
+                user_features = status["user"]
+                t.registration_age = CommonUtil.count_num_days_from_today(user_features["created_at"])
+                t.num_followers = user_features["followers_count"]
+                t.num_followee = user_features["friends_count"]
+                if t.num_followee !=0:
+                       t.ratio_foll_followee = t.num_followers / t.num_followee
+                is_verified = user_features["verified"]
+                if is_verified:
+                    t.is_verified = 1
+                else:
+                    t.is_verified = 0
+                t.len_desc = len(user_features["description"])
+                t.len_screen_name = len(user_features["screen_name"])
+                user_url = user_features["url"]
+                if user_url:
+                    t.has_url = 1
+                # Create tweet characteristics to write to file
+                tweet_str =  text + "|" + str(t.length_tweet) + "|" + str(t.num_words) + "|" + str(t.num_unique_chars) + "|" \
+                            + str(t.num_hashtags) + "|" + str(t.retweet_cnt) + "|" +  str(t.num_swear_words) + "|" \
+                            + str(t.num_at_emotions) + "|" \
+                            + str(t.registration_age) + "|" + str(t.num_followers) + "|" + str(t.num_followee) + "|" \
+                            + str(t.is_verified) + "|" + str(t.len_desc) + "|" + str(t.len_screen_name) + "|" \
+                            + str(t.has_url)
+                tweet_list.append(tweet_str)
                 tweet_text_list.append(smart_str(text))
                 row_num += 1
             count_fetched += search_results_len
-    #write the tweets to a file
+    # write the tweets to a file
     outfile = open("test_tweets.txt", "w")
-    for tweet_text in tweet_text_list:
-        outfile.write(tweet_text)
+    for tweet in tweet_list:
+        outfile.write(tweet)
+        outfile.write("\n")
     outfile.close()
-    return tweet_text_list
+    # convert the tweet string to comma separated string
+    tweet_text_str = ""
+    for tweet in tweet_text_list:
+        tweet_text_str = tweet_text_str + "$" + tweet
+    return tweet_text_str
 
 
-# train_data, train_label = preprocess()
-# clf = run_svm(train_data, train_label)
-# tweet_attr_list,tweet_test_list = fetch_new_tweets()
-# predict_label(clf,tweet_attr_list,tweet_test_list)
+def predict_label(clf):
+    n_features = 14
+    row_index = 0
+    n_test_data = 100
+    tweet_text_list = []
+    test_data = np.zeros((n_test_data, n_features), dtype=np.int)
+    outfile = open("tweet_prediction.txt", "w")
+    f = open("test_tweets.txt", "r")
+    for line in f:
+        row_data = line.split("|")
+        column_counter = 0
+        column_index = 0
+        for data in row_data:
+            if column_counter == 0:
+                tweet_text_list.append(data)
+            else:
+                test_data[row_index][column_index] = data
+                column_index += 1
+            column_counter+=1
+        row_index += 1
+    f.close()
+    predicted_label = clf.predict(test_data)
+    print predicted_label
+    num_credible_tweets = np.count_nonzero(predicted_label)
+    print "# of credible tweets:" , num_credible_tweets
+    print "# of non-credible tweets:" , n_test_data - num_credible_tweets
 
+    # write the predictions to the output file
+    tweet_predict_str = ""
+    i = 0
+    for tweet_text in tweet_text_list:
+        tweet_predict = tweet_text + "|" + str(predicted_label[i])
+        outfile.write(tweet_predict)
+        tweet_predict_str = tweet_predict_str + "$" + tweet_predict
+        i += 1
+    outfile.close()
+    return tweet_predict_str
+
+
+train_data, train_label = preprocess()
+clf = run_svm(train_data, train_label)
 fetch_tweets_for_topic('Paul Pierce')
+predict_label(clf)
+
+
 
